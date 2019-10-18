@@ -12,6 +12,7 @@ app.post('/user', function (req, res) {
           name: body.nombre,
           email: body.email,
           password: body.password,
+          image: body.image,
           rol: body.rol
       });
 
@@ -25,7 +26,7 @@ app.post('/user', function (req, res) {
           res.json({
             ok: true,
             user: UserDB
-         })
+         }) 
       })
 
   })
