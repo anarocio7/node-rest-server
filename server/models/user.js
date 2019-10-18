@@ -43,6 +43,15 @@ let userSchema = new Schema({
     }
 });
 
+// Return user information without the password
+
+userSchema.methods.toJSON = function(){
+    let user = this;
+    let userObject = user.toObject();
+    delete userObject.password;
+    return userObject;
+}
+
 userSchema.plugin(uniqueValidator, {
     message: '{PATH} must be unique'
 })
