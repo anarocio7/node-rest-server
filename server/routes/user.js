@@ -13,7 +13,9 @@ app.get('/user', function (req, res) {
   let limit = req.query.limite || 5;
     limit = Number(limit);
 
-      User.find({})
+// Second parameter on find method will allow us to return only the fields typed there
+
+      User.find({state: true}, "name email rol state google image")
           .skip(pages)
           .limit(limit)
           .exec((err, usuarios) => {
@@ -23,11 +25,14 @@ app.get('/user', function (req, res) {
                   err
               })
           }
-          res.json({
-            ok: true,
-            usuarios
+      User.countDocuments({state: true}, (err, counting) => {
+        res.json({
+          ok: true,
+          usuarios,
+          counting
           })
         })
+      })
   })
   
 app.post('/user', function (req, res) {
@@ -72,9 +77,37 @@ app.put('/user/:id', function (req, res) {
           })
       })
   })
+
+// Delete User based on Id. User is based on schema
   
-app.delete('/user', function (req, res) {
-      res.json('Delete Usuario')
+app.delete('/user/:id', function (req, res) {
+      let id = req.params.id;
+      let statusChanged = {
+        state: false
+      }
+
+      // Updates user status to false when deleted
+
+      User.findByIdAndUpdate(id, statusChanged, { new: true }, (err, deletedUser) => {
+        if(err){
+          return res.status(400).json({
+                ok: false,
+                err
+          })
+        }
+        if(!deletedUser){
+          return res.status(400).json({
+            ok: false,
+            err: {
+              message: 'User not found'
+            }
+          })
+        }
+        res.json({
+          ok: true,
+          user: deletedUser
+        });
+      });
   })
 
 module.exports = app;
