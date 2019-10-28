@@ -1,2 +1,2 @@
 node_modules/
-config/mongoConnect.js
+server/config/mongoConnect.js
