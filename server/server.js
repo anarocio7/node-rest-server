@@ -14,10 +14,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-
- 
-
-app.use(require('../server/routes/user'));
+// Global configuration Configuration
+app.use(require('./routes/index.js'))
 
 
 //** Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. */

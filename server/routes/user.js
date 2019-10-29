@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const { verifyToken, verifyAdminRole } = require('../middlewares/auth')
 const app = express();
 
 const bcrypt = require('bcrypt');
@@ -7,7 +8,7 @@ const _ = require('underscore');
 
 // This method allows us to get certain amount of users for page
 
-app.get('/user', function (req, res) {
+app.get('/user', verifyToken, function (req, res) {
   let pages = req.query.pages || 0;
     pages = Number(pages)
   let limit = req.query.limite || 5;
@@ -35,7 +36,7 @@ app.get('/user', function (req, res) {
       })
   })
   
-app.post('/user', function (req, res) {
+app.post('/user', [verifyToken, verifyAdminRole], function (req, res) {
       let body = _.pick(req.body, ['name', 'email', 'password', 'image', 'rol', 'state']);
       let user = new User({
           name: body.name,
@@ -61,7 +62,7 @@ app.post('/user', function (req, res) {
 
   })
   
-app.put('/user/:id', function (req, res) {
+app.put('/user/:id', verifyToken, function (req, res) {
       let id = req.params.id;
       let body = req.body;
       User.findByIdAndUpdate(id, body, {new: true, runValidators: true }, (err, UserDB) => {
@@ -80,7 +81,7 @@ app.put('/user/:id', function (req, res) {
 
 // Delete User based on Id. User is based on schema
   
-app.delete('/user/:id', function (req, res) {
+app.delete('/user/:id', verifyToken, function (req, res) {
       let id = req.params.id;
       let statusChanged = {
         state: false

@@ -16,3 +16,10 @@ if (process.env.NODE_ENV === 'dev'){
 
 process.env.URLDB = urlDB;
 
+// Token expiration date
+
+process.env.tokenExp = 60 * 60 * 24 * 30;
+
+// Seed (authentication secret)
+
+process.env.SEED = process.env.SEED || 'secret'
