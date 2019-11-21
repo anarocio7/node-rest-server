@@ -8,7 +8,7 @@ const _ = require('underscore');
 
 // This method allows us to get certain amount of users for page
 
-app.get('/user', verifyToken, function (req, res) {
+const getUser = (req, res) => {
   let pages = req.query.pages || 0;
     pages = Number(pages)
   let limit = req.query.limite || 5;
@@ -19,7 +19,7 @@ app.get('/user', verifyToken, function (req, res) {
       User.find({state: true}, "name email rol state google image")
           .skip(pages)
           .limit(limit)
-          .exec((err, usuarios) => {
+          .exec((err, users) => {
             if(err){
               return res.status(400).json({
                   ok: false,
@@ -29,14 +29,14 @@ app.get('/user', verifyToken, function (req, res) {
       User.countDocuments({state: true}, (err, counting) => {
         res.json({
           ok: true,
-          usuarios,
+          users,
           counting
           })
         })
       })
-  })
+  }
   
-app.post('/user', [verifyToken, verifyAdminRole], function (req, res) {
+const createUser = (req, res) => {
       let body = _.pick(req.body, ['name', 'email', 'password', 'image', 'rol', 'state']);
       let user = new User({
           name: body.name,
@@ -60,28 +60,13 @@ app.post('/user', [verifyToken, verifyAdminRole], function (req, res) {
          }) 
       })
 
-  })
+  }
   
-app.put('/user/:id', verifyToken, function (req, res) {
-      let id = req.params.id;
-      let body = req.body;
-      User.findByIdAndUpdate(id, body, {new: true, runValidators: true }, (err, UserDB) => {
-        if(err){
-          return res.status(400).json({
-                ok: false,
-                err
-          })
-        }
-        res.json({
-          ok: true,
-          user: UserDB
-          })
-      })
-  })
+
 
 // Delete User based on Id. User is based on schema
   
-app.delete('/user/:id', verifyToken, function (req, res) {
+const deleteUser = (req, res) => {
       let id = req.params.id;
       let statusChanged = {
         state: false
@@ -109,6 +94,10 @@ app.delete('/user/:id', verifyToken, function (req, res) {
           user: deletedUser
         });
       });
-  })
+  }
 
-module.exports = app;
+module.exports = {
+  deleteUser,
+  createUser,
+  getUser
+}

@@ -6,11 +6,10 @@ const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
 const User = require('../models/user');
-const app = express();
+// const app = express();
 
-module.exports = app;
-
-app.post('/login', (req, res) => {
+// app.post('/login', 
+const login = (req, res) => {
     let body = req.body;
     User.findOne({ email: body.email }, (err, UserDB) => {
         if(err){
@@ -46,11 +45,11 @@ app.post('/login', (req, res) => {
             token
         })
     })
-});
+};
 
 // Google Configuration that returns a google object
 
-async function verify(token) {
+const verify = async (token) => {
     const ticket = await client.verifyIdToken({
         idToken: token,
         audience: process.env.CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
@@ -70,13 +69,14 @@ async function verify(token) {
 
 // Post method for Google Sign in 
 
-app.post('/google', async (req, res) => {
+// app.post('/google', 
+const postGoogle = async (req, res) => {
     let token = req.body.idtoken
     let googleUser =  await verify(token)
-                            .catch(e => {
+                            .catch(err => {
                                 res.status(403).json({
                                     ok: false,
-                                    e: err
+                                    err
                                 })
                             })
     User.findOne({ email: googleUser.email }, (err, UserDB) => {
@@ -87,7 +87,7 @@ app.post('/google', async (req, res) => {
             })
         }
         if(UserDB){
-            if(user.google === false){
+            if(UserDB.google === false){
                 return res.status(500).json({
                     ok: false,
                     err: {
@@ -134,6 +134,10 @@ app.post('/google', async (req, res) => {
         }
 
     })
-});
+};
 
-module.exports = app;
+module.exports = {
+    login,
+    postGoogle,
+    verify
+}

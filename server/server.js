@@ -25,7 +25,7 @@ app.use(require('./routes/index.js'))
 
 //** Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. */
 
-mongoose.connect('urlDB', {
+mongoose.connect('mongodb://localhost:27017/supercafe', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

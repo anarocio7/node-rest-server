@@ -9,38 +9,13 @@ let validRoles = {
 };
 
 let userSchema = new Schema({
-    name: {
-        type: String,
-        required: [true, 'Name is needed to continue']
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: [true, 'Email is needed to continue']
-    },
-    password: {
-        type: String,
-        required: [true, 'Password is mandatory']
-    },
-    image: {
-        type: String,
-        required: false
-    },
-    rol: {
-        type: String,
-        default: 'USER_ROL',
-        required: false,
-        enum: validRoles
-    },
-    state: {
-        type: Boolean,
-        default: true,
-        required: false
-    },
-    google: {
-        type: Boolean,
-        default: false
-    }
+    name: { type: String, required: [true, 'Name is needed to continue']},
+    email: { type: String, unique: true, required: [true, 'Email is needed to continue']},
+    password: { type: String, required: [true, 'Password is mandatory']},
+    image: { type: String, required: false },
+    rol: { type: String, default: 'USER_ROL', required: false, enum: validRoles },
+    state: { type: Boolean, default: true, required: false },
+    google: { type: Boolean, default: false }
 });
 
 // Return user information without the password
@@ -56,4 +31,4 @@ userSchema.plugin(uniqueValidator, {
     message: '{PATH} must be unique'
 })
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('User', userSchema);
